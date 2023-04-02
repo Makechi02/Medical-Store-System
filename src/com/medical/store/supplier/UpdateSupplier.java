@@ -19,8 +19,6 @@ public class UpdateSupplier extends JFrame {
     private final DefaultTableModel model = new DefaultTableModel();
 
 	private final Connection connection = new Connections().getConnection();
-	private PreparedStatement preparedStatement;
-	private ResultSet resultSet;
 
 	public UpdateSupplier() {
 		super("Update Supplier");
@@ -143,8 +141,8 @@ public class UpdateSupplier extends JFrame {
 			try {
 				int records_found = 0;
 				String query = "SELECT * FROM suppliers WHERE id = '"+ id +"' OR name = '"+ name +"'";
-				preparedStatement = connection.prepareStatement(query);
-				resultSet = preparedStatement.executeQuery();
+				PreparedStatement preparedStatement = connection.prepareStatement(query);
+				ResultSet resultSet = preparedStatement.executeQuery();
 				while(resultSet.next()) {
 					id_field.setText(resultSet.getString(1));
 					name_field.setText(resultSet.getString(2));

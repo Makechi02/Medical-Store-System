@@ -8,170 +8,192 @@ import java.awt.*;
 import java.sql.*;
 
 public class SearchMedicine extends JFrame {
-	private final JTextField t1;
-	private final JTextField t2;
-	private final JTextField t3;
-	private final JTextField t4;
-	private final JTextField t5;
-	private final JTextField t6;
-	private final JTextField t7;
-	private final JTextField t8;
-	private final JTextField t9;
-	private final JTextField t10;
-	private final JTextField t11;
-	private final JTextField t12;
+	private final JTextField batch_field = new JTextField();
+	private final JTextField name_field = new JTextField();
+	private final JTextField company_field = new JTextField();
+	private final JTextField quantity_field = new JTextField();
+	private final JTextField expiry_field = new JTextField();
+	private final JTextField purchase_date_field = new JTextField();
+	private final JTextField type_field = new JTextField();
+	private final JTextField purchase_price_field = new JTextField();
+	private final JTextField sale_field = new JTextField();
+	private final JTextField rack_no_field = new JTextField();
+	private final JTextField supplier_name_field = new JTextField();
+	private final JTextField supplier_id_field = new JTextField();
+
 	private final Connection connection = new Connections().getConnection();
 	private ResultSet resultSet;
 	private final DefaultTableModel model = new DefaultTableModel();
 
 	public SearchMedicine() {
-		super("Search Medicine ");
-		setSize(900,700);
+		super("Search Medicine");
+		setSize(950,720);
 		setLocationRelativeTo(null);
 		setResizable(false);
-		getContentPane().setBackground(Color.cyan);
-
-		Font f = new Font("Times New Roman", Font.BOLD, 20);
 		setLayout(null);
 
-		JLabel ln = new JLabel("Search Medicine");
-		ln.setFont(new Font("Times New Roman",Font.BOLD,25));
-		ln.setForeground(Color.blue);
-		ln.setBounds(300,30,300,40);
-		this.add(ln);
+		Font font = new Font("Chilanka", Font.BOLD, 20);
+		Font fields_font = new Font("Chilanka", Font.PLAIN, 18);
+		Color background_color = Color.CYAN;
 
-		JLabel l1 = new JLabel("Medicine Batch no*");
-		l1.setFont(f);
-		l1.setBounds(50,100,200,25);
-		this.add(l1);
+		JLabel heading = new JLabel("Delete Medicine");
+		heading.setFont(new Font("Chilanka",Font.BOLD,30));
+		heading.setBounds(0,40,getWidth(),40);
+		heading.setHorizontalAlignment(JLabel.CENTER);
+		heading.setForeground(Color.blue);
+		add(heading);
 
-		t1 = new JTextField(20);
-		t1.setBounds(250,100,100,25);t1.setToolTipText("Enter medicine batch no to search");
-		this.add(t1);
+		JLabel batch_label = new JLabel("Batch no");
+		batch_label.setFont(font);
+		batch_label.setBounds(50,100,200,25);
+		add(batch_label);
 
-		JLabel l2 = new JLabel("Medicine name*");
-		l2.setFont(f);
-		l2.setBounds(50,140,200,25);
-		this.add(l2);
+		batch_field.setBounds(250, 100, 200, 25);
+		batch_field.setToolTipText("Enter medicine batch no to delete medicine");
+		batch_field.setFont(fields_font);
+		add(batch_field);
 
-		t2 = new JTextField(20);
-		t2.setBounds(250,140,200,25);t2.setToolTipText("Enter medicine name to search");
-		this.add(t2);
+		JLabel name_label = new JLabel("Name");
+		name_label.setFont(font);
+		name_label.setBounds(50,140,200,25);
+		add(name_label);
 
-		JLabel l3 = new JLabel("Medicine company");
-		l3.setFont(f);
-		l3.setBounds(50,180,200,25);
-		this.add(l3);
+		name_field.setBounds(250, 140, 200, 25);
+		name_field.setToolTipText("Enter medicine name to delete medicine");
+		name_field.setFont(fields_font);
+		add(name_field);
 
-		t3 = new JTextField(20);
-		t3.setBounds(250,180,200,25);
-		this.add(t3);
+		JLabel company_label = new JLabel("Company");
+		company_label.setFont(font);
+		company_label.setBounds(50,180,200,25);
+		add(company_label);
 
-		JLabel l4 = new JLabel("Medicine quantity");
-		l4.setFont(f);
-		l4.setBounds(50,220,200,25);
-		this.add(l4);
+		company_field.setBounds(250,180,200,25);
+		company_field.setFont(fields_font);
+		company_field.setEditable(false);
+		add(company_field);
 
-		t4= new JTextField(20);
-		t4.setBounds(250,220,100,25);
-		this.add(t4);
+		JLabel quantity_label = new JLabel("Quantity");
+		quantity_label.setFont(font);
+		quantity_label.setBounds(50,220,200,25);
+		add(quantity_label);
 
-		JLabel l5 = new JLabel("Med expiry date");
-		l5.setFont(f);
-		l5.setBounds(50,260,250,25);
-		this.add(l5);
+		quantity_field.setBounds(250, 220, 200, 25);
+		quantity_field.setFont(fields_font);
+		quantity_field.setEditable(false);
+		add(quantity_field);
 
-		t5= new JTextField(20);
-		t5.setBounds(250,260,100,25);
-		this.add(t5);
+		JLabel expiry_label = new JLabel("Expiry Date");
+		expiry_label.setFont(font);
+		expiry_label.setBounds(50,260,200,25);
+		add(expiry_label);
 
+		expiry_field.setBounds(250, 260, 200, 25);
+		expiry_field.setFont(fields_font);
+		expiry_field.setEditable(false);
+		add(expiry_field);
 
-		JLabel l6 = new JLabel("Med purchase date");
-		l6.setFont(f);
-		l6.setBounds(50,300,250,25);
-		this.add(l6);
+		JLabel purchase_date_label = new JLabel("Purchase Date");
+		purchase_date_label.setFont(font);
+		purchase_date_label.setBounds(50,300,200,25);
+		add(purchase_date_label);
 
-		t6= new JTextField(20);
-		t6.setBounds(250,300,100,25);
-		this.add(t6);
+		purchase_date_field.setBounds(250, 300, 200, 25);
+		purchase_date_field.setFont(fields_font);
+		purchase_date_field.setEditable(false);
+		add(purchase_date_field);
 
-		JLabel l7 = new JLabel("Medicine type");
-		l7.setFont(f);
-		l7.setBounds(470,100,200,25);
-		this.add(l7);
+		JLabel type_label = new JLabel("Type");
+		type_label.setFont(font);
+		type_label.setBounds(500,100,200,25);
+		add(type_label);
 
-		t7 = new JTextField(20);
-		t7.setBounds(720,100,100,25);
-		this.add(t7);
+		type_field.setBounds(690, 100, 200, 25);
+		type_field.setFont(fields_font);
+		type_field.setEditable(false);
+		add(type_field);
 
-		JLabel l8 = new JLabel("Medicine purchase price");
-		l8.setFont(f);
-		l8.setBounds(470,140,220,25);
-		this.add(l8);
+		JLabel purchase_price_label = new JLabel("Purchase Price");
+		purchase_price_label.setFont(font);
+		purchase_price_label.setBounds(500,140,220,25);
+		add(purchase_price_label);
 
-		t8 = new JTextField(20);
-		t8.setBounds(720,140,100,25);
-		this.add(t8);
+		purchase_price_field.setBounds(690,140,200,25);
+		purchase_price_field.setToolTipText("Enter medicine purchase price");
+		purchase_price_field.setFont(fields_font);
+		purchase_price_field.setEditable(false);
+		add(purchase_price_field);
 
-		JLabel l9 = new JLabel("Medicine sale price");
-		l9.setFont(f);
-		l9.setBounds(470,180,200,25);
-		this.add(l9);
+		JLabel sale_label = new JLabel("Sale Price");
+		sale_label.setFont(font);
+		sale_label.setBounds(500,180,200,25);
+		add(sale_label);
 
-		t9 = new JTextField(20);
-		t9.setBounds(720,180,100,25);
-		this.add(t9);
+		sale_field.setBounds(690,180,200,25);
+		sale_field.setToolTipText("Enter medicine sale price");
+		sale_field.setFont(fields_font);
+		sale_field.setEditable(false);
+		add(sale_field);
 
-		JLabel l10 = new JLabel("Medicine rack no");
-		l10.setFont(f);
-		l10.setBounds(470,220,200,25);
-		this.add(l10);
+		JLabel rack_no_label = new JLabel("Rack No");
+		rack_no_label.setFont(font);
+		rack_no_label.setBounds(500,220,200,25);
+		add(rack_no_label);
 
-		t10 = new JTextField(20);
-		t10.setBounds(720,220,100,25);
-		this.add(t10);
+		rack_no_field.setBounds(690,220,200,25);
+		rack_no_field.setEditable(false);
+		rack_no_field.setFont(fields_font);
+		add(rack_no_field);
 
-		JLabel l11 = new JLabel("Supplier name");
-		l11.setFont(f);
-		l11.setBounds(470,260,180,25);
-		this.add(l11);
+		JLabel supplier_name_label = new JLabel("Supplier Name");
+		supplier_name_label.setFont(font);
+		supplier_name_label.setBounds(500,260,200,25);
+		add(supplier_name_label);
 
-		t11 = new JTextField(20);
-		t11.setBounds(720,260,100,25);
-		this.add(t11);
+		supplier_name_field.setBounds(690,260,200,25);
+		supplier_name_field.setFont(fields_font);
+		supplier_name_field.setEditable(false);
+		add(supplier_name_field);
 
-		JLabel l12 = new JLabel("Supplier id");
-		l12.setFont(f);
-		l12.setBounds(470,300,180,25);
-		this.add(l12);
+		JLabel supplier_id_label = new JLabel("Supplier Id");
+		supplier_id_label.setFont(font);
+		supplier_id_label.setBounds(500,300,200,25);
+		add(supplier_id_label);
 
-		t12 = new JTextField(20);
-		t12.setBounds(720,300,100,25);
-		this.add(t12);
+		supplier_id_field.setBounds(690,300,200,25);
+		supplier_id_field.setFont(fields_font);
+		supplier_id_field.setEditable(false);
+		add(supplier_id_field);
+
+        JPanel buttons_panel = new JPanel();
+        buttons_panel.setBounds(0, 330, getWidth(), 40);
+        buttons_panel.setBackground(background_color);
 
 		JButton search_button = new JButton("Search", new ImageIcon("images//search.png"));
-		search_button.setBounds(150,330,110,35);
-		search_button.setToolTipText("click to search medicine details");
+		search_button.setFont(fields_font);
+		search_button.setToolTipText("click to open medicine details");
 		search_button.addActionListener(e -> handleSearch());
-		this.add(search_button);
+		buttons_panel.add(search_button);
 
 		JButton clear_button = new JButton("Clear", new ImageIcon("images//clear.png"));
-		clear_button.setBounds(300,330,110,35);
 		clear_button.setToolTipText("click to clear all text fields");
+		clear_button.setFont(fields_font);
 		clear_button.addActionListener(e -> handleClear());
-		this.add(clear_button);
+		buttons_panel.add(clear_button);
 
 		JButton all_button = new JButton("All", new ImageIcon("images//all.png"));
-		all_button.setBounds(450,330,110,35);
 		all_button.setToolTipText("click to view all medicine details");
+		all_button.setFont(fields_font);
 		all_button.addActionListener(e -> handleAll());
-		this.add(all_button);
+		buttons_panel.add(all_button);
+
+		add(buttons_panel);
 
 		JTable tabGrid = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(tabGrid);
-		scrollPane.setBounds(0,380,900,600);
-		this.add(scrollPane);
-		tabGrid.setFont(new Font ("Times New Roman", Font.PLAIN,15));
+        scrollPane.setBounds(0,380, getWidth(), getHeight() - 420);
+        add(scrollPane);
+        tabGrid.setFont(new Font ("Chilanka", Font.PLAIN,16));
 
 		model.addColumn("Batch");
 		model.addColumn("NAME");
@@ -186,55 +208,59 @@ public class SearchMedicine extends JFrame {
 		model.addColumn("SUPPLIER_ID");
 		model.addColumn("SUPPLIER_NAME");
 
+        getContentPane().setBackground(background_color);
 		setVisible(true);
 	}
 
 	private void handleSearch() {
+        String batch_no = batch_field.getText();
+        String name = name_field.getText();
+
 		try {
-			if(((t1.getText()).equals(""))&&((t2.getText()).equals(""))) {
+			if(batch_no.isBlank() && name.isBlank()) {
 				JOptionPane.showMessageDialog(this,"Please enter medicine batch no or name!","Warning!!!",JOptionPane.WARNING_MESSAGE);
 			} else {
 				int records_found = 0;
 
-				PreparedStatement preparedStatement = connection.prepareStatement("select * from medicine where name='" + t2.getText() + "' or batch_no='" + t1.getText() + "'");
+				PreparedStatement preparedStatement = connection.prepareStatement("select * from medicine where name='" + name + "' or batch_no='" + batch_no + "'");
 				resultSet = preparedStatement.executeQuery();
 				while(resultSet.next()) {
-					t1.setText(resultSet.getString(1));
-					t2.setText(resultSet.getString(2));
-					t3.setText(resultSet.getString(3));
-					t4.setText(resultSet.getString(4));
-					t5.setText(resultSet.getString(5));
-					t6.setText(resultSet.getString(6));
-					t7.setText(resultSet.getString(7));
-					t8.setText(resultSet.getString(8));
-					t9.setText(resultSet.getString(9));
-					t10.setText(resultSet.getString(10));
-					t12.setText(resultSet.getString(11));
-					t11.setText(resultSet.getString(12));
+					batch_field.setText(resultSet.getString(1));
+					name_field.setText(resultSet.getString(2));
+					company_field.setText(resultSet.getString(3));
+					quantity_field.setText(resultSet.getString(4));
+					expiry_field.setText(resultSet.getString(5));
+					purchase_date_field.setText(resultSet.getString(6));
+					type_field.setText(resultSet.getString(7));
+					purchase_price_field.setText(resultSet.getString(8));
+					sale_field.setText(resultSet.getString(9));
+					rack_no_field.setText(resultSet.getString(10));
+					supplier_id_field.setText(resultSet.getString(11));
+					supplier_name_field.setText(resultSet.getString(12));
 					records_found = 1;
 				}
 				if (records_found == 0) {
 					JOptionPane.showMessageDialog(null,"Record is not available","Dialog",JOptionPane.WARNING_MESSAGE);
 				}
 			}
-		} catch(Exception se) {
-			se.printStackTrace();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	private void handleClear() {
-		t1.setText("");
-		t2.setText("");
-		t3.setText("");
-		t4.setText("");
-		t5.setText("");
-		t6.setText("");
-		t7.setText("");
-		t8.setText("");
-		t9.setText("");
-		t10.setText("");
-		t11.setText("");
-		t12.setText("");
+		batch_field.setText("");
+		name_field.setText("");
+		company_field.setText("");
+		quantity_field.setText("");
+		expiry_field.setText("");
+		purchase_date_field.setText("");
+		type_field.setText("");
+		purchase_price_field.setText("");
+		sale_field.setText("");
+		rack_no_field.setText("");
+		supplier_name_field.setText("");
+		supplier_id_field.setText("");
 	}
 
 	private void handleAll() {

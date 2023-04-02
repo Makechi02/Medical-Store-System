@@ -1,6 +1,7 @@
 package com.medical.store.medicine;
 
 import com.medical.store.connections.Connections;
+import com.medical.store.constants.MedicineType;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,232 +10,216 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class UpdateMedicine extends JFrame {
-	private final JTextField t1;
-	private final JTextField t2;
-	private final JTextField t3;
-	private final JTextField t4;
-	private final JTextField t5;
-	private final JTextField t6;
-	private final JTextField t7;
-	private final JTextField t8;
-	private final JTextField t9;
-	private final JTextField t10;
-	private final JTextField t11;
-	private final JTextField t12;
-	private final JComboBox<String> msname;
-	private final JComboBox<String> tabtype;
-    private String s;
-	private String tabt;
+	private final JTextField batch_field = new JTextField();
+	private final JTextField name_field = new JTextField();
+	private final JTextField company_field = new JTextField();
+	private final JTextField quantity_field = new JTextField();
+	private final JTextField expiry_field = new JTextField();
+	private final JTextField purchase_date_field = new JTextField();
+	private final JTextField purchase_price_field = new JTextField();
+	private final JTextField sale_field = new JTextField();
+	private final JTextField rack_no_field = new JTextField();
+	private final JTextField supplier_id_field = new JTextField();
+
+	private final JComboBox<String> supplier_name_box;
+	private final JComboBox<MedicineType> type_box;
+    private String supplier_name;
+	private String type;
 	private final Connection connection = new Connections().getConnection();
 	private PreparedStatement preparedStatement;
 	private Statement statement;
 	private ResultSet resultSet;
 	private final DefaultTableModel model = new DefaultTableModel();
+	private final List<String> supplier_names = new ArrayList<>();
 
 	public UpdateMedicine() {
 		super("Update Medicine");
-		setSize(900,700);
+		setSize(950, 720);
 		setLocationRelativeTo(null);
 		setResizable(false);
-		getContentPane().setBackground(Color.cyan);
+		setLayout(null);
+
+		Font font = new Font("Chilanka", Font.BOLD, 20);
+		Font fields_font = new Font("Chilanka", Font.PLAIN, 18);
+		Color background_color = Color.CYAN;
+
+		JLabel heading = new JLabel("Update Medicine");
+		heading.setFont(new Font("Chilanka",Font.BOLD,30));
+		heading.setBounds(0,40,getWidth(),40);
+		heading.setHorizontalAlignment(JLabel.CENTER);
+		heading.setForeground(Color.blue);
+		add(heading);
+
+		JLabel batch_label = new JLabel("Batch no");
+		batch_label.setFont(font);
+		batch_label.setBounds(50,100,200,25);
+		add(batch_label);
+
+		batch_field.setBounds(250, 100, 200, 25);
+		batch_field.setToolTipText("Enter medicine batch no");
+		batch_field.setFont(fields_font);
+		add(batch_field);
+
+		JLabel name_label = new JLabel("Name");
+		name_label.setFont(font);
+		name_label.setBounds(50,140,200,25);
+		add(name_label);
+
+		name_field.setBounds(250, 140, 200, 25);
+		name_field.setToolTipText("Enter medicine name");
+		name_field.setFont(fields_font);
+		add(name_field);
+
+		JLabel company_label = new JLabel("Company");
+		company_label.setFont(font);
+		company_label.setBounds(50,180,200,25);
+		add(company_label);
+
+		company_field.setBounds(250,180,200,25);
+		company_field.setFont(fields_font);
+		add(company_field);
+
+		JLabel quantity_label = new JLabel("Quantity");
+		quantity_label.setFont(font);
+		quantity_label.setBounds(50,220,200,25);
+		add(quantity_label);
+
+		quantity_field.setBounds(250, 220, 200, 25);
+		quantity_field.setFont(fields_font);
+		add(quantity_field);
+
+		JLabel expiry_label = new JLabel("Expiry Date");
+		expiry_label.setFont(font);
+		expiry_label.setBounds(50,260,200,25);
+		add(expiry_label);
+
+		expiry_field.setBounds(250, 260, 200, 25);
+		expiry_field.setFont(fields_font);
+		add(expiry_field);
+
+		JLabel purchase_date_label = new JLabel("Purchase Date");
+		purchase_date_label.setFont(font);
+		purchase_date_label.setBounds(50,300,200,25);
+		add(purchase_date_label);
+
+		purchase_date_field.setBounds(250, 300, 200, 25);
+		purchase_date_field.setFont(fields_font);
+		add(purchase_date_field);
+
+		JLabel type_label = new JLabel("Type");
+		type_label.setFont(font);
+		type_label.setBounds(500,100,200,25);
+		add(type_label);
 		
-		Font f = new Font("Times New Roman", Font.BOLD, 20);
-		this.setLayout(null);
+		type_box = new JComboBox<>(MedicineType.values());
+		type_box.setBounds(690, 100, 200, 25);
+		type_box.setToolTipText("Select medicine type");
+		type_box.setFont(fields_font);
+		type_box.addActionListener(e -> type = Objects.requireNonNull(type_box.getSelectedItem()).toString());
+		add(type_box);
+
+		JLabel purchase_price_label = new JLabel("Purchase Price");
+		purchase_price_label.setFont(font);
+		purchase_price_label.setBounds(500,140,220,25);
+		add(purchase_price_label);
+
+		purchase_price_field.setBounds(690,140,200,25);
+		purchase_price_field.setFont(fields_font);
+		add(purchase_price_field);
+
+		JLabel sale_label = new JLabel("Sale Price");
+		sale_label.setFont(font);
+		sale_label.setBounds(500,180,200,25);
+		add(sale_label);
+
+		sale_field.setBounds(690,180,200,25);
+		sale_field.setToolTipText("Enter medicine sale price");
+		sale_field.setFont(fields_font);
+		add(sale_field);
+
+		JLabel rack_no_label = new JLabel("Rack No");
+		rack_no_label.setFont(font);
+		rack_no_label.setBounds(500,220,200,25);
+		add(rack_no_label);
+
+		rack_no_field.setBounds(690,220,200,25);
+		rack_no_field.setFont(fields_font);
+		add(rack_no_field);
+
+		JLabel supplier_name_label = new JLabel("Supplier Name");
+		supplier_name_label.setFont(font);
+		supplier_name_label.setBounds(500,260,200,25);
+		add(supplier_name_label);
+
+		JLabel supplier_id_label = new JLabel("Supplier Id");
+		supplier_id_label.setFont(font);
+		supplier_id_label.setBounds(500,300,200,25);
+		add(supplier_id_label);
+
+		supplier_id_field.setBounds(690,300,200,25);
+		supplier_id_field.setFont(fields_font);
+		supplier_id_field.setEditable(false);
+		add(supplier_id_field);
 		
-		JLabel ln = new JLabel("Update Medicine");
-		ln.setFont(new Font("Times New Roman",Font.BOLD,25));
-		ln.setForeground(Color.blue);
-		ln.setBounds(300,30,300,40);
-		this.add(ln);
-		
-		JLabel l1 = new JLabel("Medicine Batch no*");
-		l1.setFont(f);
-		l1.setBounds(50,100,200,25);
-		this.add(l1);
-		
-		t1 = new JTextField(20);
-		t1.setBounds(250,100,100,25);t1.setToolTipText("Enter medicine batch no");
-		this.add(t1);
-		
-		JLabel l2 = new JLabel("Medicine name*");
-		l2.setFont(f);
-		l2.setBounds(50,140,200,25);
-		this.add(l2);
-		
-		t2 = new JTextField(20);
-		t2.setBounds(250,140,200,25);
-		t2.setToolTipText("Enter medicine name");
-		this.add(t2);
-		
-		JLabel l3 = new JLabel("Medicine company*");
-		l3.setFont(f);
-		l3.setBounds(50,180,200,25);
-		this.add(l3);
-		
-		t3 = new JTextField(20);
-		t3.setBounds(250,180,200,25);
-		t3.setToolTipText("Enter medicine company");
-		this.add(t3);
-		
-		JLabel l4 = new JLabel("Medicine quantity*");
-		l4.setFont(f);
-		l4.setBounds(50,220,200,25);
-		this.add(l4);
-		
-		t4= new JTextField(20);
-		t4.setBounds(250,220,100,25);
-		t4.setToolTipText("Enter medicine quantity");
-		this.add(t4);
-		
-		JLabel l5 = new JLabel("Med expiry date*");
-		l5.setFont(f);
-		l5.setBounds(50,260,250,25);
-		this.add(l5);
-		
-		t5= new JTextField(20);
-		t5.setBounds(250,260,100,25);
-		t5.setToolTipText("Enter medicine expiry date");
-		this.add(t5);
-		
-		JLabel l6 = new JLabel("Med purchase date*");
-		l6.setFont(f);
-		l6.setBounds(50,300,260,25);
-		this.add(l6);
-		
-		t6= new JTextField(20);
-		t6.setBounds(250,300,100,25);
-		t6.setToolTipText("Enter medicine expiry date");
-		this.add(t6);
-		
-		JLabel l7 = new JLabel("Medicine type*");
-		l7.setFont(f);
-		l7.setBounds(470,100,200,25);
-		this.add(l7);
-		
-		t7 = new JTextField(20);
-		t7.setBounds(720,100,100,25);
-		t7.setToolTipText("Enter medicine type");
-		this.add(t7);
-		
-		tabtype=new JComboBox<>();
-		tabtype.addItem("--type--");
-		tabtype.addItem("Tablet");
-		tabtype.addItem("Capsule");
-		tabtype.addItem("Syrup");
-		tabtype.addItem("Insulin");
-		tabtype.addItem("Cream");
-		tabtype.addItem("Balm");
-		tabtype.addItem("Drop");
-		tabtype.addItem("Granule");
-		tabtype.addItem("Oil");
-		tabtype.addItem("Powder");
-		tabtype.setBounds(600,100,100,25);
-		tabtype.setToolTipText("Select medicine type");
-		this.add(tabtype);
-		tabtype.addActionListener(ae -> {
-			tabt = (String)tabtype.getSelectedItem();
-			t7.setText(tabt);
-		});
-		
-		JLabel l8 = new JLabel("Medicine purchase price*");
-		l8.setFont(f);
-		l8.setBounds(470,140,220,25);
-		this.add(l8);
-		
-		t8 = new JTextField(20);
-		t8.setBounds(720,140,100,25);
-		t8.setToolTipText("Enter medicine purchase price");
-		this.add(t8);
-		
-		JLabel l9 = new JLabel("Medicine sale price*");
-		l9.setFont(f);
-		l9.setBounds(470,180,200,25);
-		this.add(l9);
-		
-		t9 = new JTextField(20);
-		t9.setBounds(720,180,100,25);
-		t9.setToolTipText("Enter medicine sale price");
-		this.add(t9);
-		
-		JLabel l10 = new JLabel("Medicine rack no*");
-		l10.setFont(f);
-		l10.setBounds(470,220,200,25);
-		this.add(l10);
-		
-		t10 = new JTextField(20);
-		t10.setBounds(720,220,100,25);
-		t10.setToolTipText("Enter medicine rack no");
-		this.add(t10);
-		
-		JLabel l11 = new JLabel("Supplier name*");
-		l11.setFont(f);
-		l11.setBounds(470,260,180,25);
-		this.add(l11);
-		
-		t11 = new JTextField(20);
-		t11.setBounds(720,260,100,25);
-		this.add(t11);
-		
-		JLabel l12 = new JLabel("Supplier id");
-		l12.setFont(f);
-		l12.setBounds(470,300,180,25);
-		this.add(l12);
-		
-		t12 = new JTextField(20);
-		t12.setBounds(720,300,100,25);
-		this.add(t12);
-		
-		msname=new JComboBox<>();
-		msname.setBounds(600,260,110,25);
-		msname.setToolTipText("select medicine supplier name");
-		this.add(msname);
-		msname.addActionListener(ae -> {
-			s = (String) msname.getSelectedItem();
-			t11.setText(s);
-		});
-		
+		supplier_name_box = new JComboBox<>();
+		supplier_name_box.setBounds(690,260,200,25);
+		supplier_name_box.setToolTipText("select medicine supplier name");
+		supplier_name_box.setFont(fields_font);
+		supplier_name_box.addActionListener(e -> supplier_name = Objects.requireNonNull(supplier_name_box.getSelectedItem()).toString());
+		this.add(supplier_name_box);
+
 		try {
-			preparedStatement = connection.prepareStatement("select id, name from suppliers");
+			preparedStatement = connection.prepareStatement("select name from suppliers");
 			resultSet = preparedStatement.executeQuery();
 			while(resultSet.next()) {
-				String sname1= resultSet.getString(2);
-				msname.addItem(sname1);
+				String supplier_name = resultSet.getString("name");
+				supplier_name_box.addItem(supplier_name);
+				supplier_names.add(supplier_name);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 
+		JPanel buttons_panel = new JPanel();
+		buttons_panel.setBounds(0, 330, getWidth(), 40);
+		buttons_panel.setBackground(background_color);
+
 		JButton open_button = new JButton("Open", new ImageIcon("images//open.png"));
-		open_button.setBounds(150,330,110,35);
 		open_button.setToolTipText("click to open medicine details");
+		open_button.setFont(fields_font);
 		open_button.addActionListener(e -> handleOpen());
-		this.add(open_button);
+		buttons_panel.add(open_button);
 
 		JButton update_button = new JButton("Update", new ImageIcon("images//update.png"));
-		update_button.setBounds(300,330,110,35);
+		update_button.setFont(fields_font);
 		update_button.setToolTipText("click to update medicine details");
 		update_button.addActionListener(e -> handleUpdate());
-		this.add(update_button);
+		buttons_panel.add(update_button);
 
 		JButton clear_button = new JButton("Clear", new ImageIcon("images//clear.png"));
-		clear_button.setBounds(450,330,110,35);
 		clear_button.setToolTipText("click to clear all text fields");
+		clear_button.setFont(fields_font);
 		clear_button.addActionListener(e -> handleClear());
-		this.add(clear_button);
+		buttons_panel.add(clear_button);
 
 		JButton all_button = new JButton("All", new ImageIcon("images//all.png"));
-		all_button.setBounds(600,330,110,35);
 		all_button.setToolTipText("click to view all medicine details");
+		all_button.setFont(fields_font);
 		all_button.addActionListener(e -> handleAll());
-		this.add(all_button);
+		buttons_panel.add(all_button);
+
+		add(buttons_panel);
 
 		JTable tabGrid = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(tabGrid);
-		scrollPane.setBounds(0,380,900,600);
-		this.add(scrollPane);
-		tabGrid.setFont(new Font ("Times New Roman", Font.PLAIN,15));
+		scrollPane.setBounds(0,380, getWidth(), getHeight() - 420);
+		add(scrollPane);
+		tabGrid.setFont(new Font ("Chilanka", Font.PLAIN,16));
 		
 		model.addColumn("BATCH");
 		model.addColumn("NAME");
@@ -248,39 +233,43 @@ public class UpdateMedicine extends JFrame {
 		model.addColumn("RACK_NO");
 		model.addColumn("SUPPLIER_ID");
 		model.addColumn("SUPPLIER_NAME");
-		
+
+		getContentPane().setBackground(background_color);
 		this.setVisible(true);
  	}
 
 	 private void handleOpen() {
-		 if(((t1.getText()).equals(""))&&((t2.getText()).equals(""))) {
+		String batch = batch_field.getText();
+		String name = name_field.getText();
+
+		 if(batch.isBlank() && name.isBlank()) {
 			 JOptionPane.showMessageDialog(this,"Please enter medicine batch no or name!","Warning!!!",JOptionPane.WARNING_MESSAGE);
 		 }
 		 else {
 			 try {
 				 int record_found = 0;
-				 preparedStatement = connection.prepareStatement("Select id from suppliers where name='"+s+"'");
+				 preparedStatement = connection.prepareStatement("Select id from suppliers where name='" + supplier_name + "'");
 				 resultSet = preparedStatement.executeQuery();
 				 while(resultSet.next()) {
 					 String sid1 = resultSet.getString(1);
-					 t12.setText(sid1);
+					 supplier_id_field.setText(sid1);
 				 }
 
-				 preparedStatement = connection.prepareStatement("select * from medicine where name='"+t2.getText()+"' or batch_no='"+t1.getText()+"' ");
+				 preparedStatement = connection.prepareStatement("select * from medicine where name='"+ name +"' or batch_no='"+ batch +"' ");
 				 resultSet = preparedStatement.executeQuery();
 				 while(resultSet.next()) {
-					 t1.setText(resultSet.getString(1));
-					 t2.setText(resultSet.getString(2));
-					 t3.setText(resultSet.getString(3));
-					 t4.setText(resultSet.getString(4));
-					 t5.setText(resultSet.getString(5));
-					 t6.setText(resultSet.getString(6));
-					 t7.setText(resultSet.getString(7));
-					 t8.setText(resultSet.getString(8));
-					 t9.setText(resultSet.getString(9));
-					 t10.setText(resultSet.getString(10));
-					 t12.setText(resultSet.getString(11));
-					 t11.setText(resultSet.getString(12));
+					 batch_field.setText(resultSet.getString("batch_no"));
+					 name_field.setText(resultSet.getString("name"));
+					 company_field.setText(resultSet.getString("company"));
+					 quantity_field.setText(resultSet.getString("quantity"));
+					 expiry_field.setText(resultSet.getString(5));
+					 purchase_date_field.setText(resultSet.getString(6));
+					 type_box.setSelectedIndex(getTypeIndex(resultSet.getString("type")));
+					 purchase_price_field.setText(resultSet.getString(8));
+					 sale_field.setText(resultSet.getString(9));
+					 rack_no_field.setText(resultSet.getString(10));
+					 supplier_id_field.setText(resultSet.getString(11));
+					 supplier_name_box.setSelectedIndex(getSupplierIndex(resultSet.getString("supplier_name")));
 					 record_found = 1;
 				 }
 				 if (record_found == 0) {
@@ -293,12 +282,33 @@ public class UpdateMedicine extends JFrame {
 	 }
 
 	 private void handleUpdate() {
+		 String batch = batch_field.getText();
+		 String name = name_field.getText();
+		 String company = company_field.getText();
+		 String quantity = quantity_field.getText();
+		 String expiry = expiry_field.getText();
+		 String purchase_date = purchase_date_field.getText();
+		 String purchase_price = purchase_price_field.getText();
+		 String sale_price = sale_field.getText();
+		 String rack_no = rack_no_field.getText();
+		 String supplier_id = supplier_id_field.getText();
+
 		 try {
-			 if(((t1.getText()).equals(""))||((t2.getText()).equals(""))||((t3.getText()).equals(""))||((t4.getText()).equals(""))||((t5.getText()).equals(""))||((t6.getText()).equals(""))||((t7.getText()).equals(""))||((t8.getText()).equals(""))||((t9.getText()).equals(""))||((t10.getText()).equals(""))||((t11.getText()).equals(""))) {
-				 JOptionPane.showMessageDialog(this,"* Detail are Missing !","Warning!!!",JOptionPane.WARNING_MESSAGE);
+			 if (
+					 batch.isBlank()
+					 || name.isBlank()
+					 || company.isBlank()
+					 || quantity.isBlank()
+					 || expiry.isBlank()
+					 || purchase_date.isBlank()
+					 || purchase_price.isBlank()
+					 || sale_price.isBlank()
+					 || rack_no.isBlank()
+			 ) {
+				 JOptionPane.showMessageDialog(this,"Please fill out all fields!","Warning!!!",JOptionPane.WARNING_MESSAGE);
 			 } else {
 				 statement = connection.createStatement();
-				 String str1="UPDATE medicine SET batch_no='"+t1.getText()+"',name='"+t2.getText()+"',company='"+t3.getText()+"',quantity='"+t4.getText()+"',expiry_date='"+t5.getText()+"',purchase_date='"+t6.getText()+"',type='"+t7.getText()+"',purchase_price='"+t8.getText()+"',sale_price='"+t9.getText()+"',rack_no='"+t10.getText()+"',supplier_id='"+t12.getText()+"',supplier_name='"+t11.getText()+"' where batch_no='"+t1.getText()+"'or name='"+t2.getText()+"'";
+				 String str1 = "UPDATE medicine SET batch_no='"+ batch +"',name='"+ name +"',company='"+ company +"',quantity='"+ quantity +"',expiry_date='"+ expiry +"',purchase_date='"+ purchase_date +"',type='"+ type +"',purchase_price='"+ purchase_price +"',sale_price='"+ sale_price +"',rack_no='"+ rack_no +"',supplier_id='"+ supplier_id +"',supplier_name='"+ supplier_name +"' where batch_no='"+ batch +"'or name='"+ name +"'";
 				 statement.executeUpdate(str1);
 				 JOptionPane.showMessageDialog(null, "Record is updated");
 				 handleClear();
@@ -309,18 +319,16 @@ public class UpdateMedicine extends JFrame {
 	 }
 
 	 private void handleClear() {
-		 t1.setText("");
-		 t2.setText("");
-		 t3.setText("");
-		 t4.setText("");
-		 t5.setText("");
-		 t6.setText("");
-		 t7.setText("");
-		 t8.setText("");
-		 t9.setText("");
-		 t10.setText("");
-		 t11.setText("");
-		 t12.setText("");
+		 batch_field.setText("");
+		 name_field.setText("");
+		 company_field.setText("");
+		 quantity_field.setText("");
+		 expiry_field.setText("");
+		 purchase_date_field.setText("");
+		 purchase_price_field.setText("");
+		 sale_field.setText("");
+		 rack_no_field.setText("");
+		 supplier_id_field.setText("");
 	 }
 
 	 private void handleAll() {
@@ -329,12 +337,27 @@ public class UpdateMedicine extends JFrame {
 			 statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
 			 resultSet = statement.executeQuery("SELECT * from medicine" );
 			 while(resultSet.next()) {
-				 model.insertRow(r++, new Object[]{resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12) });
+				 model.insertRow(r++, new Object[] {resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12) });
 			 }
 		 } catch(Exception e) {
 			 e.printStackTrace();
 		 }
 	 }
+
+	private int getTypeIndex(String type) {
+		MedicineType[] medicineTypes = MedicineType.values();
+		for (int i = 0; i < medicineTypes.length; i++) {
+			if (Objects.equals(medicineTypes[i].toString(), type)) return i;
+		}
+		return -1;
+	}
+
+	private int getSupplierIndex(String name) {
+		for (int i = 0; i < supplier_names.size(); i++) {
+			if (Objects.equals(supplier_names.get(i), name)) return i;
+		}
+		return -1;
+	}
 
 	public static void main(String[] args) {
 		new UpdateMedicine();

@@ -67,6 +67,7 @@ public class DeleteSupplier extends JFrame {
 
 		address_field.setBounds(420,210,300,30);
 		address_field.setFont(fields_font);
+		address_field.setEditable(false);
 		add(address_field);
 
 		JLabel l4 = new JLabel("Supplier phone no:");
@@ -76,6 +77,7 @@ public class DeleteSupplier extends JFrame {
 
 		phone_field.setBounds(420,260,300,30);
 		phone_field.setFont(fields_font);
+		phone_field.setEditable(false);
 		add(phone_field);
 
 		JLabel l5 = new JLabel("Supplier email:");
@@ -85,6 +87,7 @@ public class DeleteSupplier extends JFrame {
 
 		email_field.setBounds(420,310,300,30);
 		email_field.setFont(fields_font);
+		email_field.setEditable(false);
 		add(email_field);
 
 		JPanel buttons_panel = new JPanel();
@@ -154,7 +157,7 @@ public class DeleteSupplier extends JFrame {
 					records_found = 1;
 				}
 				if (records_found == 0) {
-					showMessage("Supplier with id " + id + " does not exist");
+					showMessage("Supplier with that id or name does not exist!");
 				}
 			} catch(Exception se) {
 				se.printStackTrace();

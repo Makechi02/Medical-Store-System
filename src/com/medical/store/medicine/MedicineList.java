@@ -17,18 +17,19 @@ public class MedicineList extends JFrame {
         getContentPane().setBackground(Color.cyan);
         setLayout(null);
 
-        JLabel ln = new JLabel("Stock Of Medicines");
-        ln.setFont(new Font("Times New Roman",Font.BOLD,25));
-        ln.setForeground(Color.blue);
-        ln.setBounds(300,30,300,25);
-        add(ln);
+        JLabel label = new JLabel("List of Medicine Available");
+        label.setFont(new Font("Chilanka",Font.BOLD,25));
+        label.setForeground(Color.blue);
+        label.setBounds(0,30,getWidth(),40);
+        label.setHorizontalAlignment(JLabel.CENTER);
+        add(label);
 
         DefaultTableModel model = new DefaultTableModel();
         JTable tabGrid = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tabGrid);
         scrollPane.setBounds(0,80,900,600);
         add(scrollPane);
-        tabGrid.setFont(new Font ("Times New Roman", Font.PLAIN,15));
+        tabGrid.setFont(new Font ("Chilanka", Font.PLAIN,15));
 
         model.addColumn("Batch no");
         model.addColumn("Name");
