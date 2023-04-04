@@ -1,12 +1,11 @@
 package com.medical.store.supplier;
 
-import com.medical.store.connections.Connections;
+import com.medical.store.supplier.connection.SupplierService;
 
-import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.sql.*;
-import java.sql.ResultSet;
+import java.awt.*;
+import java.util.List;
 
 public class SearchSupplier extends JFrame {
 	private final JTextField id_field = new JTextField();
@@ -15,10 +14,9 @@ public class SearchSupplier extends JFrame {
 	private final JTextField phone_field = new JTextField();
 	private final JTextField email_field = new JTextField();
 
-	private ResultSet resultSet;
 	private final DefaultTableModel model = new DefaultTableModel();
 
-	Connection connections = new Connections().getConnection();
+	private final SupplierService supplierService;
 
 	public SearchSupplier() {
 		super("Search Supplier");
@@ -44,7 +42,7 @@ public class SearchSupplier extends JFrame {
 		add(l1);
 
 		id_field.setBounds(420,110,300,30);
-		id_field.setToolTipText("Enter supplier id to delete supplier");
+		id_field.setToolTipText("Enter supplier id");
 		id_field.setFont(fields_font);
 		add(id_field);
 
@@ -54,8 +52,8 @@ public class SearchSupplier extends JFrame {
 		add(l2);
 
 		name_field.setBounds(420,160,300,30);
-		name_field.setToolTipText("Enter supplier name to delete supplier");
 		name_field.setFont(fields_font);
+		name_field.setEditable(false);
 		add(name_field);
 
 		JLabel l3 = new JLabel("Supplier address:");
@@ -65,6 +63,7 @@ public class SearchSupplier extends JFrame {
 
 		address_field.setBounds(420,210,300,30);
 		address_field.setFont(fields_font);
+		address_field.setEditable(false);
 		add(address_field);
 
 		JLabel l4 = new JLabel("Supplier phone no:");
@@ -74,6 +73,7 @@ public class SearchSupplier extends JFrame {
 
 		phone_field.setBounds(420,260,300,30);
 		phone_field.setFont(fields_font);
+		phone_field.setEditable(false);
 		add(phone_field);
 
 		JLabel l5 = new JLabel("Supplier email:");
@@ -83,6 +83,7 @@ public class SearchSupplier extends JFrame {
 
 		email_field.setBounds(420,310,300,30);
 		email_field.setFont(fields_font);
+		email_field.setEditable(false);
 		add(email_field);
 
 		JPanel buttons_panel = new JPanel();
@@ -123,35 +124,21 @@ public class SearchSupplier extends JFrame {
 		model.addColumn("EMAIL");
 
 		getContentPane().setBackground(background_color);
+		supplierService = new SupplierService();
 		setVisible(true);
 	}
 
 	private void handleSearch() {
 		String id = id_field.getText();
-		String name = name_field.getText();
-
-		try {
-			if(id.isBlank() && name.isBlank()) {
-				showMessage("Please enter supplier id or name!");
-			} else {
-				int records_found = 0;
-				String query = "select * from suppliers where id = '" + id + "' or name = '" + name + "'";
-				PreparedStatement preparedStatement = connections.prepareStatement(query);
-				resultSet = preparedStatement.executeQuery();
-				while(resultSet.next()) {
-					id_field.setText(resultSet.getString(1));
-					name_field.setText(resultSet.getString(2));
-					address_field.setText(resultSet.getString(3));
-					phone_field.setText(resultSet.getString(4));
-					email_field.setText(resultSet.getString(5));
-					records_found = 1;
-				}
-				if (records_found == 0) {
-					showMessage("Supplier with id " + id + " does not exist");
-				}
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
+		if (id.isBlank()) {
+			showMessage("Please enter supplier id!");
+		} else {
+			Supplier supplier = supplierService.getSupplier(Integer.parseInt(id));
+			id_field.setText(String.valueOf(supplier.getId()));
+			name_field.setText(supplier.getName());
+			address_field.setText(supplier.getAddress());
+			phone_field.setText(supplier.getPhone());
+			email_field.setText(supplier.getEmail());
 		}
 	}
 
@@ -164,15 +151,10 @@ public class SearchSupplier extends JFrame {
 	}
 
 	private void handleAll() {
-		int r = 0;
-		try {
-			Statement statement = connections.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			resultSet = statement.executeQuery("SELECT * FROM suppliers" );
-			while(resultSet.next()) {
-				model.insertRow(r++, new Object[]{resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5) });
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
+		int row = 0;
+		List<Supplier> suppliers = supplierService.getSuppliers();
+		for (Supplier supplier: suppliers) {
+			model.insertRow(row++, new Object[] {supplier.getId(), supplier.getName(), supplier.getAddress(), supplier.getPhone(), supplier.getEmail()});
 		}
 	}
 

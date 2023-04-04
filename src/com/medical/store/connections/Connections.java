@@ -5,14 +5,16 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 public class Connections {
 
     public static Connection connection;
     public static Statement statement;
-    public static PreparedStatement preparedStatement;
 
     public Connections() {
 
@@ -41,19 +43,6 @@ public class Connections {
 
     public Statement getStatement() {
         return statement;
-    }
-
-    public void saveSupplier(String name, String address, String phone, String email) {
-        try {
-            preparedStatement = connection.prepareStatement("insert into suppliers (name,address,phone,email)values(?,?,?,?)");
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, address);
-            preparedStatement.setString(3, phone);
-            preparedStatement.setString(4, email);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

@@ -1,12 +1,12 @@
 package com.medical.store.supplier;
 
-import com.medical.store.connections.Connections;
 
-import java.awt.*;
+import com.medical.store.supplier.connection.SupplierService;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.sql.*;
-import java.sql.ResultSet;
+import java.awt.*;
+import java.util.List;
 
 public class SupplierList extends JFrame {
 
@@ -39,15 +39,9 @@ public class SupplierList extends JFrame {
         model.addColumn("EMAIL");
 
         int row = 0;
-        try {
-            Connection connection = new Connections().getConnection();
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM suppliers");
-            while(resultSet.next()) {
-                model.insertRow(row++,new Object[]{resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5)});
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
+        List<Supplier> suppliers = new SupplierService().getSuppliers();
+        for (Supplier supplier: suppliers) {
+            model.insertRow(row++, new Object[] {supplier.getId(), supplier.getName(), supplier.getAddress(), supplier.getPhone(), supplier.getEmail()});
         }
 
         setVisible(true);

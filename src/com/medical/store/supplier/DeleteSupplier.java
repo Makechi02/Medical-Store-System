@@ -1,216 +1,181 @@
 package com.medical.store.supplier;
 
-import com.medical.store.connections.Connections;
 
-import java.awt.*;
+import com.medical.store.supplier.connection.SupplierService;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.sql.*;
-import java.sql.ResultSet;
+import java.awt.*;
+import java.util.List;
 
 public class DeleteSupplier extends JFrame {
-	private final JTextField id_field = new JTextField();
-	private final JTextField name_field = new JTextField();
-	private final JTextField address_field = new JTextField();
-	private final JTextField phone_field = new JTextField();
-	private final JTextField email_field = new JTextField();
-
-	private PreparedStatement preparedStatement;
-	private ResultSet resultSet;
+    private final JTextField id_field = new JTextField();
+    private final JTextField name_field = new JTextField();
+    private final JTextField address_field = new JTextField();
+    private final JTextField phone_field = new JTextField();
+    private final JTextField email_field = new JTextField();
 
     private final DefaultTableModel model = new DefaultTableModel();
 
-	Connection connection = new Connections().getConnection();
+    private final SupplierService supplierService;
 
-	public DeleteSupplier() {
-		super("Delete Supplier");
-		setSize(950,720);
-		setLocationRelativeTo(null);
-		setResizable(false);
-		setLayout(null);
+    public DeleteSupplier() {
+        super("Delete Supplier");
+        setSize(950,720);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setLayout(null);
 
-		Font font = new Font("Chilanka", Font.BOLD, 20);
-		Font fields_font = new Font("Chilanka", Font.PLAIN, 18);
-		Color background_color = Color.CYAN;
+        Font font = new Font("Chilanka", Font.BOLD, 20);
+        Font fields_font = new Font("Chilanka", Font.PLAIN, 18);
+        Color background_color = Color.CYAN;
 
-		JLabel heading = new JLabel("Delete Supplier");
-		heading.setFont(new Font("Chilanka",Font.BOLD,30));
-		heading.setBounds(0,40,getWidth(),40);
-		heading.setHorizontalAlignment(JLabel.CENTER);
-		heading.setForeground(Color.blue);
-		add(heading);
+        JLabel heading = new JLabel("Delete Supplier");
+        heading.setFont(new Font("Chilanka",Font.BOLD,30));
+        heading.setBounds(0,40,getWidth(),40);
+        heading.setHorizontalAlignment(JLabel.CENTER);
+        heading.setForeground(Color.blue);
+        add(heading);
 
-		JLabel l1 = new JLabel("Supplier id:");
-		l1.setBounds(200,110,200,30);
-		l1.setFont(font);
-		add(l1);
+        JLabel l1 = new JLabel("Supplier id:");
+        l1.setBounds(200,110,200,30);
+        l1.setFont(font);
+        add(l1);
 
-		id_field.setBounds(420,110,300,30);
-		id_field.setToolTipText("Enter supplier id to delete supplier");
-		id_field.setFont(fields_font);
-		add(id_field);
+        id_field.setBounds(420,110,300,30);
+        id_field.setToolTipText("Enter supplier id to delete supplier");
+        id_field.setFont(fields_font);
+        add(id_field);
 
-		JLabel l2 = new JLabel("Supplier name:");
-		l2.setBounds(200,160,200,30);
-		l2.setFont(font);
-		add(l2);
+        JLabel l2 = new JLabel("Supplier name:");
+        l2.setBounds(200,160,200,30);
+        l2.setFont(font);
+        add(l2);
 
-		name_field.setBounds(420,160,300,30);
-		name_field.setToolTipText("Enter supplier name to delete supplier");
-		name_field.setFont(fields_font);
-		add(name_field);
+        name_field.setBounds(420,160,300,30);
+        name_field.setFont(fields_font);
+        name_field.setEditable(false);
+        add(name_field);
 
-		JLabel l3 = new JLabel("Supplier address:");
-		l3.setBounds(200,210,200,30);
-		l3.setFont(font);
-		add(l3);
+        JLabel l3 = new JLabel("Supplier address:");
+        l3.setBounds(200,210,200,30);
+        l3.setFont(font);
+        add(l3);
 
-		address_field.setBounds(420,210,300,30);
-		address_field.setFont(fields_font);
-		address_field.setEditable(false);
-		add(address_field);
+        address_field.setBounds(420,210,300,30);
+        address_field.setFont(fields_font);
+        address_field.setEditable(false);
+        add(address_field);
 
-		JLabel l4 = new JLabel("Supplier phone no:");
-		l4.setBounds(200,260,200,30);
-		l4.setFont(font);
-		add(l4);
+        JLabel l4 = new JLabel("Supplier phone no:");
+        l4.setBounds(200,260,200,30);
+        l4.setFont(font);
+        add(l4);
 
-		phone_field.setBounds(420,260,300,30);
-		phone_field.setFont(fields_font);
-		phone_field.setEditable(false);
-		add(phone_field);
+        phone_field.setBounds(420,260,300,30);
+        phone_field.setFont(fields_font);
+        phone_field.setEditable(false);
+        add(phone_field);
 
-		JLabel l5 = new JLabel("Supplier email:");
-		l5.setBounds(200,310,200,30);
-		l5.setFont(font);
-		add(l5);
+        JLabel l5 = new JLabel("Supplier email:");
+        l5.setBounds(200,310,200,30);
+        l5.setFont(font);
+        add(l5);
 
-		email_field.setBounds(420,310,300,30);
-		email_field.setFont(fields_font);
-		email_field.setEditable(false);
-		add(email_field);
+        email_field.setBounds(420,310,300,30);
+        email_field.setFont(fields_font);
+        email_field.setEditable(false);
+        add(email_field);
 
-		JPanel buttons_panel = new JPanel();
-		buttons_panel.setBounds(0, 360, getWidth(), 40);
-		buttons_panel.setBackground(background_color);
+        JPanel buttons_panel = new JPanel();
+        buttons_panel.setBounds(0, 360, getWidth(), 40);
+        buttons_panel.setBackground(background_color);
 
-		JButton open_button = new JButton("Open", new ImageIcon("images//open.png"));
-		open_button.setToolTipText("click to open supplier details");
-		open_button.setFont(fields_font);
-		open_button.addActionListener(e -> handleOpen());
-		buttons_panel.add(open_button);
+        JButton open_button = new JButton("Open", new ImageIcon("images//open.png"));
+        open_button.setToolTipText("click to open supplier details");
+        open_button.setFont(fields_font);
+        open_button.addActionListener(e -> handleOpen());
+        buttons_panel.add(open_button);
 
-		JButton delete_button = new JButton("Delete", new ImageIcon("images//delete.png"));
-		delete_button.setToolTipText("click to delete supplier details");
-		delete_button.setFont(fields_font);
-		delete_button.addActionListener(e -> handleDelete());
-		buttons_panel.add(delete_button);
+        JButton delete_button = new JButton("Delete", new ImageIcon("images//delete.png"));
+        delete_button.setToolTipText("click to delete supplier details");
+        delete_button.setFont(fields_font);
+        delete_button.addActionListener(e -> handleDelete());
+        buttons_panel.add(delete_button);
 
-		JButton clear_button = new JButton("Clear", new ImageIcon("images//clear.png"));
-		clear_button.setToolTipText("click to clear all text fields");
-		clear_button.setFont(fields_font);
-		clear_button.addActionListener(e -> handleClear());
-		buttons_panel.add(clear_button);
+        JButton clear_button = new JButton("Clear", new ImageIcon("images//clear.png"));
+        clear_button.setToolTipText("click to clear all text fields");
+        clear_button.setFont(fields_font);
+        clear_button.addActionListener(e -> handleClear());
+        buttons_panel.add(clear_button);
 
-		JButton all_button = new JButton("All", new ImageIcon("images//all.png"));
-		all_button.setToolTipText("click to view all supplier details");
-		all_button.setFont(fields_font);
-		all_button.addActionListener(e -> handleAll());
-		buttons_panel.add(all_button);
+        JButton all_button = new JButton("All", new ImageIcon("images//all.png"));
+        all_button.setToolTipText("click to view all supplier details");
+        all_button.setFont(fields_font);
+        all_button.addActionListener(e -> handleAll());
+        buttons_panel.add(all_button);
 
-		add(buttons_panel);
+        add(buttons_panel);
 
-		JTable tabGrid = new JTable(model);
-		JScrollPane scrollPane = new JScrollPane(tabGrid);
-		scrollPane.setBounds(0, 405, getWidth(), getHeight() - 440);
-		this.add(scrollPane);
-		tabGrid.setFont(new Font ("Chilanka", Font.PLAIN,16));
+        JTable tabGrid = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(tabGrid);
+        scrollPane.setBounds(0, 405, getWidth(), getHeight() - 440);
+        this.add(scrollPane);
+        tabGrid.setFont(new Font ("Chilanka", Font.PLAIN,16));
 
-		model.addColumn("ID");
-		model.addColumn("NAME");
-		model.addColumn("ADDRESS");
-		model.addColumn("PHONE_NO");
-		model.addColumn("EMAIL");
+        model.addColumn("ID");
+        model.addColumn("NAME");
+        model.addColumn("ADDRESS");
+        model.addColumn("PHONE_NO");
+        model.addColumn("EMAIL");
 
-		getContentPane().setBackground(background_color);
-		setVisible(true);
-	}
+        getContentPane().setBackground(background_color);
+        supplierService = new SupplierService();
+        setVisible(true);
+    }
 
-	private void handleOpen() {
-		String id = id_field.getText();
-		String name = name_field.getText();
+    private void handleOpen() {
+        String id = id_field.getText();
+        if (id.isBlank()) {
+            showMessage("Please enter supplier id!");
+        } else {
+            Supplier supplier = supplierService.getSupplier(Integer.parseInt(id));
+            id_field.setText(String.valueOf(supplier.getId()));
+            name_field.setText(supplier.getName());
+            address_field.setText(supplier.getAddress());
+            phone_field.setText(supplier.getPhone());
+            email_field.setText(supplier.getEmail());
+        }
+    }
 
-		if (name.isBlank() && id.isBlank()) {
-			showMessage("Please enter supplier id or name!");
-		} else {
-			try {
-				int records_found = 0;
-				String query = "SELECT * FROM suppliers WHERE id = '"+ id +"' OR name = '"+ name +"'";
-				preparedStatement = connection.prepareStatement(query);
-				resultSet = preparedStatement.executeQuery();
-				while(resultSet.next()) {
-					id_field.setText(resultSet.getString(1));
-					name_field.setText(resultSet.getString(2));
-					address_field.setText(resultSet.getString(3));
-					phone_field.setText(resultSet.getString(4));
-					email_field.setText(resultSet.getString(5));
-					records_found = 1;
-				}
-				if (records_found == 0) {
-					showMessage("Supplier with that id or name does not exist!");
-				}
-			} catch(Exception se) {
-				se.printStackTrace();
-			}
-		}
-	}
+    private void handleDelete() {
+        String id = id_field.getText();
+        supplierService.deleteSupplier(id);
+        handleClear();
+    }
 
-	private void handleDelete() {
-		String id = id_field.getText();
-		String name = name_field.getText();
+    private void handleClear() {
+        id_field.setText("");
+        name_field.setText("");
+        address_field.setText("");
+        phone_field.setText("");
+        email_field.setText("");
+    }
 
-		if(id.isBlank() && name.isBlank()) {
-			showMessage("Please enter supplier id or name!");
-		} else {
-			try {
-				String query = "DELETE FROM suppliers WHERE id = '" + id + "' OR name='" + name + "'";
-				preparedStatement =connection.prepareStatement(query);
-				preparedStatement.executeUpdate();
-				JOptionPane.showMessageDialog(this,"Record is deleted.");
-				handleClear();
-			} catch(Exception se) {
-				se.printStackTrace();
-			}
-		}
-	}
+    private void handleAll() {
+        int row = 0;
+        List<Supplier> suppliers = supplierService.getSuppliers();
+        for (Supplier supplier: suppliers) {
+            model.insertRow(row++, new Object[] {supplier.getId(), supplier.getName(), supplier.getAddress(), supplier.getPhone(), supplier.getEmail()});
+        }
+    }
 
-	private void handleClear() {
-		id_field.setText("");
-		name_field.setText("");
-		address_field.setText("");
-		phone_field.setText("");
-		email_field.setText("");
-	}
+    private void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, null, JOptionPane.WARNING_MESSAGE);
+    }
 
-	private void handleAll() {
-		int row = 0;
-		try {
-			Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			resultSet = statement.executeQuery("SELECT * FROM suppliers" );
-			while(resultSet.next()) {
-				model.insertRow(row++, new Object[]{resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5) });
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void showMessage(String message) {
-		JOptionPane.showMessageDialog(this, message, null, JOptionPane.WARNING_MESSAGE);
-	}
-
-	public static void main(String[] args) {
-	      new DeleteSupplier();
-	}
+    public static void main(String[] args) {
+        new DeleteSupplier();
+    }
 
 }

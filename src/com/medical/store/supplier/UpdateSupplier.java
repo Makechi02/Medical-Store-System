@@ -1,13 +1,13 @@
 package com.medical.store.supplier;
 
-import com.medical.store.connections.Connections;
+
+
+import com.medical.store.supplier.connection.SupplierService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.sql.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 public class UpdateSupplier extends JFrame {
 	private final JTextField id_field = new JTextField();
@@ -18,7 +18,7 @@ public class UpdateSupplier extends JFrame {
 
     private final DefaultTableModel model = new DefaultTableModel();
 
-	private final Connection connection = new Connections().getConnection();
+	private final SupplierService supplierService;
 
 	public UpdateSupplier() {
 		super("Update Supplier");
@@ -31,7 +31,7 @@ public class UpdateSupplier extends JFrame {
 		Font fields_font = new Font("Chilanka", Font.PLAIN, 18);
 		Color background_color = Color.CYAN;
 
-		JLabel heading = new JLabel("Delete Supplier");
+		JLabel heading = new JLabel("Update Supplier");
 		heading.setFont(new Font("Chilanka",Font.BOLD,30));
 		heading.setBounds(0,40,getWidth(),40);
 		heading.setHorizontalAlignment(JLabel.CENTER);
@@ -44,7 +44,7 @@ public class UpdateSupplier extends JFrame {
 		add(l1);
 
 		id_field.setBounds(420,110,300,30);
-		id_field.setToolTipText("Enter supplier id to delete supplier");
+		id_field.setToolTipText("Enter supplier id");
 		id_field.setFont(fields_font);
 		add(id_field);
 
@@ -54,7 +54,7 @@ public class UpdateSupplier extends JFrame {
 		add(l2);
 
 		name_field.setBounds(420,160,300,30);
-		name_field.setToolTipText("Enter supplier name to delete supplier");
+		name_field.setToolTipText("Enter supplier name");
 		name_field.setFont(fields_font);
 		add(name_field);
 
@@ -128,35 +128,21 @@ public class UpdateSupplier extends JFrame {
         model.addColumn("EMAIL");
 
 		getContentPane().setBackground(background_color);
+		supplierService = new SupplierService();
 		setVisible(true);
 	}
 
 	private void handleOpen() {
 		String id = id_field.getText();
-		String name = name_field.getText();
-
-		if (name.isBlank() && id.isBlank()) {
-			showMessage("Please enter supplier id or name!");
+		if (id.isBlank()) {
+			showMessage("Please enter supplier id!");
 		} else {
-			try {
-				int records_found = 0;
-				String query = "SELECT * FROM suppliers WHERE id = '"+ id +"' OR name = '"+ name +"'";
-				PreparedStatement preparedStatement = connection.prepareStatement(query);
-				ResultSet resultSet = preparedStatement.executeQuery();
-				while(resultSet.next()) {
-					id_field.setText(resultSet.getString(1));
-					name_field.setText(resultSet.getString(2));
-					address_field.setText(resultSet.getString(3));
-					phone_field.setText(resultSet.getString(4));
-					email_field.setText(resultSet.getString(5));
-					records_found = 1;
-				}
-				if (records_found == 0) {
-					showMessage("Supplier with id " + id + " does not exist");
-				}
-			} catch(Exception se) {
-				se.printStackTrace();
-			}
+			Supplier supplier = supplierService.getSupplier(Integer.parseInt(id));
+			id_field.setText(String.valueOf(supplier.getId()));
+			name_field.setText(supplier.getName());
+			address_field.setText(supplier.getAddress());
+			phone_field.setText(supplier.getPhone());
+			email_field.setText(supplier.getEmail());
 		}
 	}
 
@@ -167,25 +153,13 @@ public class UpdateSupplier extends JFrame {
 		String phone = phone_field.getText();
 		String email = email_field.getText();
 
-		Pattern pattern = Pattern.compile("[_a-z_A-Z_0-9]*[0-9]*@[a-zA-Z0-9]*.[a-zA-Z0-9]*");
-		Matcher matcher = pattern.matcher(email);
-		boolean matchFound = matcher.matches();
-
-		if(id.isBlank() && name.isBlank()) {
-			JOptionPane.showMessageDialog(this,"Please enter supplier id or name!","Warning!!!",JOptionPane.ERROR_MESSAGE);
+		if(id.isBlank()) {
+			showMessage("Please enter supplier id!");
 		} else if(name.isBlank() || address.isBlank() || phone.isBlank() || email.isBlank()) {
-			JOptionPane.showMessageDialog(this,"* Detail are Missing !","Warning!!!",JOptionPane.ERROR_MESSAGE);
-		} else if(!matchFound) {
-			JOptionPane.showMessageDialog(this,"Invalid email id!","Warning!!!",JOptionPane.WARNING_MESSAGE);
+			showMessage("* Detail are Missing !");
 		} else {
-			try {
-				String query = "UPDATE suppliers SET id='" + id + "', name='" + name + "', address='" + address + "', phone='" + phone + "',email='" + email + "' WHERE id='" + id +"' OR name='" + name +"'";
-				new Connections().getStatement().executeUpdate(query);
-				JOptionPane.showMessageDialog(null, "Record is updated");
-				handleClear();
-			} catch(Exception se) {
-				se.printStackTrace();
-			}
+			supplierService.updateSupplier(id, name, address, phone, email);
+			handleClear();
 		}
 	}
 
@@ -198,15 +172,10 @@ public class UpdateSupplier extends JFrame {
 	}
 
 	private void handleAll() {
-		int r = 0;
-		try {
-			Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			ResultSet resultSet = statement.executeQuery("SELECT * from suppliers");
-			while(resultSet.next()) {
-				model.insertRow(r++, new Object[]{resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5) });
-			}
-		} catch(Exception se) {
-			se.printStackTrace();
+		int row = 0;
+		List<Supplier> suppliers = new SupplierService().getSuppliers();
+		for (Supplier supplier: suppliers) {
+			model.insertRow(row++, new Object[] {supplier.getId(), supplier.getName(), supplier.getAddress(), supplier.getPhone(), supplier.getEmail()});
 		}
 	}
 
